@@ -1,0 +1,42 @@
+services:
+  users-api:
+    build:
+      context: ../../eCommerceSolution.UsersService
+      dockerfile: eCommerce.API/Dockerfile
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-users-api:v1.0
+
+  products-api:
+    build:
+      context: ../../eCommerceSolution.ProductsService
+      dockerfile: eCommerce.API/Dockerfile
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-products-api:v1.0
+
+  orders-api:
+    build:
+      context: ../../eCommerceSolution.OrdersService
+      dockerfile: eCommerce.API/Dockerfile
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-orders-api:v1.0
+
+  gateway-api:
+    build:
+      context: ../../eCommerceSolution.API.Gateway
+      dockerfile: eCommerce.API.Gateway/Dockerfile
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-gateway-api:v1.0
+
+  users-db:
+    build:
+      context: ./init-prod-db/users-postgres-db 
+      dockerfile: Dockerfile.users-postgres     
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-users-db:v1.0
+
+  products-db:
+    build:
+      context: ./init-prod-db/products-mysql-db  
+      dockerfile: Dockerfile.products-mysql      
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-products-db:v1.0
+
+  orders-db:
+    build:
+      context: ./init-prod-db/orders-mongo-db    
+      dockerfile: Dockerfile.orders-mongo       
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-orders-db:v1.0

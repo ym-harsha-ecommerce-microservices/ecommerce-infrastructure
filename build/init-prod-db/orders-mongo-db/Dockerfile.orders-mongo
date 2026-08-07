@@ -1,0 +1,7 @@
+# Use the official, stable MongoDB image
+FROM mongo:latest
+
+# The official image automatically executes any .js scripts found in this directory on startup
+COPY init-prod-orders-db.js /docker-entrypoint-initdb.d/
+
+EXPOSE 27017

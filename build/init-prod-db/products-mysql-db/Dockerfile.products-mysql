@@ -1,0 +1,7 @@
+# Use the official
+FROM mysql:latest
+
+# The official image automatically executes any .sql scripts found in this directory on startup
+COPY init-prod-products-db.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 3306
