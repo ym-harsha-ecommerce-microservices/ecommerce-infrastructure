@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-api-deployment
+  namespace: ecommerce-infrastructure
+  labels:
+    app: orders-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-api
+  template:
+    metadata:
+      labels:
+        app: orders-api
+    spec:
+      containers:
+      - name: orders-api
+        image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-orders-api:v1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        
+        # MongoDB
+        - name: DB_HOST
+          value: "orders-mongo-db-service"
+        - name: DB_PORT
+          value: "27017"
+        - name: DB_NAME
+          value: "eCommerceOrders"
+        
+        # Gateway Microservices
+        - name: USERS_MICROSERVICE_NAME
+          value: "api-gateway-service"
+        - name: USERS_MICROSERVICE_PORT
+          value: "8080"
+        - name: PRODUCTS_MICROSERVICE_NAME
+          value: "api-gateway-service"
+        - name: PRODUCTS_MICROSERVICE_PORT
+          value: "8080"
+        
+        # Redis
+        - name: REDIS_HOST
+          value: "redis-cache-service"
+        - name: REDIS_PORT
+          value: "6379"
+        
+        # RabbitMQ
+        - name: RABBITMQ_HOST
+          value: "rabbitmq-service"
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: rabbitmq-user
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: rabbitmq-pass
+        
+        # Queues & Routing
+        - name: RABBITMQ_PRODUCT_EXCHANGE
+          value: "product.exchange"
+        - name: RABBITMQ_PRODUCT_UPDATE_NAME_ROUTEING_KEY
+          value: "product.update.name"
+        - name: RABBITMQ_PRODUCT_DELETE_ROUTEING_KEY
+          value: "product.delete"
+        - name: RABBITMQ_PRODUCT_DELETE_QUEUE
+          value: "product.delete.queue"
+        - name: RABBITMQ_PRODUCT_UPDATE_QUEUE
+          value: "product.update.queue"

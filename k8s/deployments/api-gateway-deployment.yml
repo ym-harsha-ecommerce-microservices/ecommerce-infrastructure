@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+  namespace: ecommerce-infrastructure
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: gateway-api
+        image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-gateway-api:v1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        
+        - name: USERS_MICROSERVICE_NAME
+          value: "users-api-service"
+        - name: USERS_MICROSERVICE_PORT
+          value: "8080"
+        
+        - name: PRODUCTS_MICROSERVICE_NAME
+          value: "products-api-service"
+        - name: PRODUCTS_MICROSERVICE_PORT
+          value: "8080"
+        
+        - name: ORDERS_MICROSERVICE_NAME
+          value: "orders-api-service"
+        - name: ORDERS_MICROSERVICE_PORT
+          value: "8080"

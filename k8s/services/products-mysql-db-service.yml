@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-mysql-db-service
+  namespace: ecommerce-infrastructure
+  labels:
+    app: products-mysql-db
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: products-mysql-db

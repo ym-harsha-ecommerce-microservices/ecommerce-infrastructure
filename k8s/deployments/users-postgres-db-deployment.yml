@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-postgres-db
+  namespace: ecommerce-infrastructure
+  labels:
+    app: users-postgres-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-postgres-db
+  template:
+    metadata:
+      labels:
+        app: users-postgres-db
+    spec:
+      containers:
+      - name: postgres
+        image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-users-db:v1.0
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: postgres-pass
+        - name: POSTGRES_DB
+          value: "eCommerceUsers"

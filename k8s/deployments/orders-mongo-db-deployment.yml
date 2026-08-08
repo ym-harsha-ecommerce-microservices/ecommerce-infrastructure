@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-mongo-db-deployment
+  namespace: ecommerce-infrastructure
+  labels:
+    app: orders-mongo-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-mongo-db
+  template:
+    metadata:
+      labels:
+        app: orders-mongo-db
+    spec:
+      containers:
+      - name: mongo
+        image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-orders-db:v1.0
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: mongo-root-user
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: mongo-root-pass
+        - name: MONGO_INITDB_DATABASE
+          value: "eCommerceOrders"

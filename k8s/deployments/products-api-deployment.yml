@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-api-deployment
+  namespace: ecommerce-infrastructure
+  labels:
+    app: products-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-api
+  template:
+    metadata:
+      labels:
+        app: products-api
+    spec:
+      containers:
+      - name: products-api
+        image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-products-api:v1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        
+        # MySQL
+        - name: DB_SERVER
+          value: "products-mysql-db-service"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: mysql-root-user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: mysql-root-pass
+        - name: DB_NAME
+          value: "eCommerceProducts"
+        
+        # RabbitMQ
+        - name: RABBITMQ_HOST
+          value: "rabbitmq-service"
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: rabbitmq-user
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: rabbitmq-pass
+        
+        # Queues & Routing
+        - name: RABBITMQ_PRODUCT_EXCHANGE
+          value: "product.exchange"
+        - name: RABBITMQ_PRODUCT_UPDATE_NAME_ROUTEING_KEY
+          value: "product.update.name"
+        - name: RABBITMQ_PRODUCT_DELETE_ROUTEING_KEY
+          value: "product.delete"
+        - name: RABBITMQ_PRODUCT_DELETE_QUEUE
+          value: "product.delete.queue"
+        - name: RABBITMQ_PRODUCT_UPDATE_QUEUE
+          value: "product.update.queue"

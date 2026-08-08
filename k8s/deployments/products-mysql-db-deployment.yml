@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-mysql-db
+  namespace: ecommerce-infrastructure
+  labels:
+    app: products-mysql-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-mysql-db
+  template:
+    metadata:
+      labels:
+        app: products-mysql-db
+    spec:
+      containers:
+      - name: mysql
+        image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-products-db:v1.0
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ecommerce-secrets
+              key: mysql-root-pass
+        - name: MYSQL_DATABASE
+          value: "eCommerceProducts"
