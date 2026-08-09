@@ -21,7 +21,7 @@ services:
     build:
       context: ../../eCommerceSolution.API.Gateway
       dockerfile: eCommerce.API.Gateway/Dockerfile
-    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-gateway-api:v1.0
+    image: ghcr.io/ym-harsha-ecommerce-microservices/ecommerce-api-gateway:v1.0
 
   users-db:
     build:
