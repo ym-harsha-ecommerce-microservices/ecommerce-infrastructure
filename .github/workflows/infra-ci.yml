@@ -1,0 +1,29 @@
+name: Infrastructure Compose CI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'build/**'
+      - 'init-prod-db/**'
+
+jobs:
+  build-and-push-infra:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.ECOMMERCE_PIPELINE_TOKEN }}
+
+    - name: Build and Push using Docker Compose
+      run: |
+        cd build 
+        docker compose -f docker-compose.build.yml build
+        docker compose -f docker-compose.build.yml push
